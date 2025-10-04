@@ -48,7 +48,7 @@
     }
     
     #home{
-      color:#fff;text-shadow:0 4px 12px rgba(0,0,0,.5), 0 2px 4px rgba(255,107,157,.4);
+      color:#fff;text-shadow:0 4px 12px rgba(0,0,0,.2), 0 2px 4px rgba(255,107,157,.9);
       background:linear-gradient(rgba(160,102,90,.4),rgba(255,182,193,.3)),url('images/andikaa.jpg') center/cover no-repeat;
     }
 
@@ -66,7 +66,13 @@
     .sparkle{position:absolute;width:6px;height:6px;background:var(--gold);border-radius:50%;pointer-events:none;box-shadow:0 0 8px var(--gold);animation:sparkleAnim 1.2s ease-out forwards}
     @keyframes sparkleAnim{0%{transform:scale(0) translate(0,0);opacity:1}100%{transform:scale(1.5) translate(var(--tx),var(--ty));opacity:0}}
 
-    #home h1{font-family:"Pacifico",cursive;font-size:clamp(36px,8vw,64px);margin-bottom:.6rem;animation:bounceIn 1.2s cubic-bezier(.68,-.55,.265,1.55);background:linear-gradient(135deg, #fff 0%, #FFE4EC 50%, #FFC0CB 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 8px rgba(255,255,255,.4))}
+    #home h1{
+      font-family:"Pacifico",cursive;font-size:clamp(36px,8vw,64px);margin-bottom:.6rem;
+      animation:bounceIn 1.2s cubic-bezier(.68,-.55,.265,1.55);position:relative;z-index:1;
+      background:linear-gradient(135deg, #fff 0%, #FFE4EC 50%, #FFC0CB 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))
+    }
     #home p{color:rgba(255,255,255,.95);margin-bottom:1.4rem;animation:fadeIn 1s ease-in .3s both;font-size:18px;font-weight:600;letter-spacing:.5px;}
     .buttons{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;animation:fadeIn 1.4s ease-in .6s both;}
     .btn{
@@ -431,4 +437,5 @@
     })();
 </script>
 </body>
+
 </html>
