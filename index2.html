@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Birthday Web 💌</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:wght@700&family=Pacifico&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#FFF5F7; --card:#FFFBFC; --ring:#FFD6E0;
+      --ink:#5C3A3A; --muted:#B08A8A; --brown:#A0665A; --caramel:#D4876E;
+      --heart:#ff6b9d; --pink:#ffb3d9; --gold:#FFD700;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    
+    html,body{
+      height:100%;
+      overflow: hidden; /* Mencegah scroll */
+    }
+    
+    body{
+      background:linear-gradient(135deg, #FFF5F7 0%, #FFE4EC 50%, #FFD6E0 100%);
+      color:var(--ink);font-family:"Quicksand",system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      position:relative;
+    }
+
+    .view {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity .6s ease-in-out, transform .6s ease-in-out;
+      z-index: 10;
+    }
+
+    .view.is-hidden {
+      opacity: 0;
+      transform: scale(0.95);
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    #home{
+      color:#fff;text-shadow:0 4px 12px rgba(0,0,0,.5), 0 2px 4px rgba(255,107,157,.4);
+      background:linear-gradient(rgba(160,102,90,.4),rgba(255,182,193,.3)),url('images/andikaa.jpg') center/cover no-repeat;
+    }
+
+    #transitionWrap{
+      background:linear-gradient(135deg, rgba(255,245,247,.95) 0%, rgba(255,228,236,.95) 100%),
+                 url('images/backgroundlove.jpg') center/cover no-repeat;
+    }
+    
+    .hearts-container{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:99}
+    .heart{position:absolute;font-size:24px;animation:floatUp 7s ease-in infinite;opacity:0;filter:drop-shadow(0 2px 4px rgba(255,107,157,.3))}
+    @keyframes floatUp{0%{transform:translateY(100vh) rotate(0) scale(0);opacity:0}10%{opacity:.9;transform:translateY(90vh) rotate(45deg) scale(1)}90%{opacity:.7}100%{transform:translateY(-100px) rotate(360deg) scale(.8);opacity:0}}
+    .sparkle-trail{position:fixed;pointer-events:none;z-index:100}
+    .trail-item{position:absolute;font-size:14px;animation:trailFade 1s ease-out forwards}
+    @keyframes trailFade{0%{opacity:1;transform:scale(1) rotate(0)}100%{opacity:0;transform:scale(.3) rotate(180deg)}}
+    .sparkle{position:absolute;width:6px;height:6px;background:var(--gold);border-radius:50%;pointer-events:none;box-shadow:0 0 8px var(--gold);animation:sparkleAnim 1.2s ease-out forwards}
+    @keyframes sparkleAnim{0%{transform:scale(0) translate(0,0);opacity:1}100%{transform:scale(1.5) translate(var(--tx),var(--ty));opacity:0}}
+
+    #home h1{font-family:"Pacifico",cursive;font-size:clamp(36px,8vw,64px);margin-bottom:.6rem;animation:bounceIn 1.2s cubic-bezier(.68,-.55,.265,1.55);background:linear-gradient(135deg, #fff 0%, #FFE4EC 50%, #FFC0CB 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 8px rgba(255,255,255,.4))}
+    #home p{color:rgba(255,255,255,.95);margin-bottom:1.4rem;animation:fadeIn 1s ease-in .3s both;font-size:18px;font-weight:600;letter-spacing:.5px;}
+    .buttons{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;animation:fadeIn 1.4s ease-in .6s both;}
+    .btn{
+      border:0;border-radius:50px;padding:16px 28px;min-width:180px;
+      font-weight:700;font-size:17px;cursor:pointer;background:linear-gradient(135deg, var(--caramel), var(--heart));
+      color:#fff;box-shadow:0 8px 20px rgba(255,107,157,.35), 0 0 0 0 rgba(255,107,157,.4);
+      transition:all .3s ease;position:relative;overflow:hidden;
+      animation:pulse 2s ease-in-out infinite
+    }
+    @keyframes pulse{0%,100%{box-shadow:0 8px 20px rgba(255,107,157,.35), 0 0 0 0 rgba(255,107,157,.4)}50%{box-shadow:0 10px 25px rgba(255,107,157,.45), 0 0 0 10px rgba(255,107,157,0)}}
+    .btn::before{content:'';position:absolute;inset:0;background:linear-gradient(45deg,transparent,rgba(255,255,255,.3),transparent);transform:translateX(-100%);transition:transform .6s}
+    .btn:hover::before{transform:translateX(100%)}
+    .btn:hover{transform:translateY(-4px) scale(1.08);box-shadow:0 12px 30px rgba(255,107,157,.5)}
+    .btn:active{transform:translateY(-2px) scale(1.02)}
+    .btn.alt{background:linear-gradient(135deg, #fff, #FFE4EC);color:var(--heart);box-shadow:0 8px 20px rgba(255,182,193,.3)} 
+    #noBtn{transition:all .2s cubic-bezier(.68,-.55,.265,1.55)}
+    
+    .card{width:min(850px,96%);background:rgba(255,251,252,.95);backdrop-filter:blur(10px);border-radius:30px;padding:40px 30px;text-align:center;border:3px solid rgba(255,214,224,.6);box-shadow:0 20px 60px rgba(255,107,157,.2);animation:cardPop .5s cubic-bezier(.68,-.55,.265,1.55);position:relative; max-height: 95vh; overflow-y: auto;}
+    .title{font-family:"Pacifico",cursive;background:linear-gradient(135deg, var(--brown), var(--heart));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:clamp(30px,6vw,44px);margin-bottom:12px;}
+    .sub{color:var(--muted);margin-bottom:20px;font-size:15px;font-weight:600}
+    .timeline{display:grid;gap:18px;margin-top:12px;}
+    @media(min-width:680px){.timeline{grid-template-columns:repeat(2,1fr)}}
+    .cardItem{background:linear-gradient(135deg, #fff 0%, #FFF8FA 100%);border-radius:20px;padding:16px 18px;box-shadow:0 6px 20px rgba(255,107,157,.12);border:2px solid rgba(255,214,224,.5);display:flex;align-items:center;gap:14px;transition:all .4s cubic-bezier(.68,-.55,.265,1.55);cursor:pointer;}
+    .cardItem:hover{transform:translateY(-6px) scale(1.03) rotate(-1deg);box-shadow:0 15px 35px rgba(255,107,157,.25);border-color:var(--pink)}
+    .thumb{width:64px;height:64px;border-radius:16px;overflow:hidden;flex:0 0 64px;display:grid;place-items:center;background:#fff;box-shadow:0 4px 12px rgba(255,107,157,.15);}
+    .thumb img{width:100%;height:100%;object-fit:cover;}
+    .meta{text-align:left;}
+    .time{font-weight:700;color:var(--heart);margin-bottom:4px;font-size:15px}
+    .desc{font-weight:600;color:#594437;font-size:14px}
+    .ctaRow{margin-top:22px;display:flex;justify-content:center;}
+    .dressgrid{margin:26px 0;display:inline-grid;grid-template-columns:1fr 1fr;gap:20px;}
+    @media(max-width:640px){.dressgrid{grid-template-columns:1fr;gap:16px}}
+    .fit{width:100%;max-width:220px;border-radius:20px;display:block;box-shadow:0 10px 30px rgba(255,107,157,.2);border:4px solid rgba(255,255,255,.8);cursor:pointer;transition:all .5s cubic-bezier(.68,-.55,.265,1.55);position:relative;overflow:hidden;}
+    .fit::before{content:'💕';position:absolute;top:10px;right:10px;font-size:28px;opacity:0;transition:all .3s;z-index:2}
+    .fit:hover::before{opacity:1;transform:scale(1.2) rotate(15deg)}
+    .fit:hover{transform:scale(1.08) rotate(-3deg);box-shadow:0 18px 45px rgba(255,107,157,.35);border-color:var(--pink)}
+    
+    .envelope-area{display:grid;justify-items:center;gap:18px;margin-top:12px;}
+    .envelope{width:300px;height:200px;position:relative;perspective:1000px;cursor:pointer;filter:drop-shadow(0 10px 25px rgba(255,107,157,.25))}
+    .envelope:hover{transform:scale(1.1) rotate(2deg)}
+    .env-body{position:absolute;inset:0;background:linear-gradient(135deg, #f0d5c7, #e7cdb5);border-radius:16px;}
+    .env-flap{position:absolute;left:0;right:0;top:0;height:50%;background:linear-gradient(135deg, #d9b89a, #caa786);border-top-left-radius:16px;border-top-right-radius:16px;transform-origin:top;transition:transform .7s cubic-bezier(.68,-.55,.265,1.55);}
+    .env-bottom{position:absolute;left:0;right:0;bottom:0;height:60%;background:linear-gradient(135deg, #e7cdb5, #e1c3a7);border-bottom-left-radius:16px;border-bottom-right-radius:16px}
+    .letter{position:absolute;left:12px;right:12px;top:32px;height:130px;background:#fff;border-radius:14px;box-shadow:0 10px 25px rgba(0,0,0,.15);transition:transform .7s cubic-bezier(.68,-.55,.265,1.55);padding:16px;display:flex;align-items:center;justify-content:center}
+    .sweet p{color:#5a3a24;font-size:14px;font-weight:600}
+
+    .letter-modal{position:fixed;inset:0;background:rgba(255,107,157,.15);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;visibility:hidden;pointer-events:none;transition:all .5s ease;z-index:200}
+    .letter-modal.show{opacity:1;visibility:visible;pointer-events:auto}
+    .letter-content{width:min(680px,96%);max-height:85vh;background:linear-gradient(135deg, #fff 0%, #FFF8FA 100%);border-radius:30px;padding:50px 35px;box-shadow:0 25px 70px rgba(255,107,157,.3);overflow-y:auto;position:relative;transform:scale(.85);transition:all .5s cubic-bezier(.68,-.55,.265,1.55);}
+    .letter-modal.show .letter-content{transform:scale(1)}
+    .close-letter{position:absolute;top:18px;right:18px;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg, var(--caramel), var(--heart));color:#fff;border:0;cursor:pointer;font-size:24px;display:grid;place-items:center;}
+    
+    .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(255,107,157,.2);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s ease;z-index:100;backdrop-filter:blur(8px)}
+    .overlay.show{opacity:1;visibility:visible;pointer-events:auto}
+    .popup{width:min(540px,96%);background:linear-gradient(135deg, #fff, #FFF8FA);border-radius:25px;padding:28px;text-align:center;box-shadow:0 20px 50px rgba(255,107,157,.35); transform:scale(.9); transition:transform .3s cubic-bezier(.68,-.55,.265,1.55);}
+    .overlay.show .popup{transform:scale(1)}
+    .imgbox{width:150px;height:150px;margin:8px auto 16px;border-radius:20px;overflow:hidden;border:3px solid rgba(255,214,224,.6);box-shadow:0 8px 20px rgba(255,107,157,.2)}
+    .imgbox img{width:100%;height:100%;object-fit:cover}
+    
+    .confetti-piece{position:absolute;width:12px;height:12px;top:-10px;animation:confettiFall 4s linear forwards}
+    @keyframes confettiFall{to{transform:translateY(100vh) rotate(1080deg);opacity:0}}
+    .big-love{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:250px;opacity:0;pointer-events:none;z-index:300;filter:drop-shadow(0 0 30px rgba(255,107,157,.6));animation:lovePulse 2.5s ease-out forwards}
+    @keyframes lovePulse{0%{transform:translate(-50%,-50%) scale(0) rotate(0deg);opacity:0}40%{transform:translate(-50%,-50%) scale(1.4) rotate(180deg);opacity:1}70%{transform:translate(-50%,-50%) scale(1.2) rotate(270deg);opacity:1}100%{transform:translate(-50%,-50%) scale(0) rotate(360deg);opacity:0}}
+
+    /* Animasi */
+    @keyframes bounceIn{0%{transform:scale(0) rotate(-180deg);opacity:0}60%{transform:scale(1.2) rotate(10deg);opacity:1}100%{transform:scale(1) rotate(0deg)}}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes cardPop{0%{transform:scale(.7) rotate(-10deg);opacity:0}100%{transform:scale(1) rotate(0deg);opacity:1}}
+  </style>
+</head>
+<body>
+
+  <div class="hearts-container" id="heartsContainer"></div>
+  <div class="sparkle-trail" id="sparkleTrail"></div>
+
+  <!-- VIEW 1: HOME -->
+  <section id="home" class="view">
+    <div style="text-align: center;">
+      <h1>Hey, it's your birthday! 🥳</h1>
+      <p>Would you like to celebrate with me?</p>
+      <div class="buttons">
+        <button class="btn" id="yesBtn">Yes, of course! 💕</button>
+        <button class="btn alt" id="noBtn">Nggak mau 🙅‍♂</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIEW 2: TRANSITION -->
+  <section id="transitionWrap" class="view is-hidden">
+    <div class="card">
+      <div class="title">You really said yes, huh? 😚</div>
+      <p style="margin-top:14px; line-height:1.85; font-size:17px;">
+        I don't know why, but that tiny "yes" means a lot to me.<br/>
+        I've been quietly planning this, trying to make sure everything feels warm, soft,
+        and full of little things that remind me of you. 🥹<br/><br/>
+        You work so hard every single day, barely have time for yourself,
+        yet you still choose to spend your day with me — that's something I'll never take for granted. 💕<br/><br/>
+        Now… are you ready to see what I've prepared for us? ✨
+      </p>
+      <div class="ctaRow" style="margin-top:24px;">
+        <button class="btn next" id="toRundown">Show me! 💌</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIEW 3: RUNDOWN -->
+  <section id="rundownWrap" class="view is-hidden">
+    <div class="card">
+      <div class="title">Rundown in ur day ✨</div>
+      <div class="sub">Let's make it cozy & sweet (tap for details!)</div>
+      <div class="timeline">
+        <!-- PERUBAHAN: Menambahkan data-activity untuk identifikasi -->
+        <div class="cardItem" data-activity="pickup"><div class="thumb"><img src="images/motor.jpg" alt="motor"></div><div class="meta"><div class="time">10.00</div><div class="desc">Pick up ur gf 💕</div></div></div>
+        <div class="cardItem" data-activity="sushi"><div class="thumb"><img src="images/sushi.jpg" alt="sushi"></div><div class="meta"><div class="time">12.00</div><div class="desc">Lunch sushi @ Tom Sushi Royal Plaza 🍣</div></div></div>
+        <div class="cardItem" data-activity="photobox"><div class="thumb"><img src="images/photobox.jpg" alt="photobox"></div><div class="meta"><div class="time">14.00</div><div class="desc">Photobox @ Gwiyomi Royal Plaza 📸</div></div></div>
+        <div class="cardItem" data-activity="coffee"><div class="thumb"><img src="images/coffee.jpg" alt="coffee"></div><div class="meta"><div class="time">15.00</div><div class="desc">Ngopi & yapping @ Coste Café ☕</div></div></div>
+        <div class="cardItem" style="grid-column:1/-1" data-activity="gift"><div class="thumb"><img src="images/gift.jpg" alt="gift"></div><div class="meta"><div class="time">16.00 — end</div><div class="desc">Gift reveal & our time 🎁✨</div></div></div>
+      </div>
+      <div class="ctaRow"><button class="btn next" id="toDress">Next → Dresscode</button></div>
+    </div>
+  </section>
+
+  <!-- VIEW 4: DRESSCODE -->
+  <section id="dressWrap" class="view is-hidden">
+    <div class="card">
+      <div class="title">Dresscode for ur day 🤎</div>
+      <div class="sub">Please wear ur best outfit, let's make our day the happiest.<br/> I love u sayangggg! 💕</div>
+      <div class="dressgrid">
+        <img class="fit" src="images/bajucowok.jpg" alt="baju cowok">
+        <img class="fit" src="images/bajucewek.jpg" alt="baju cewek">
+      </div>
+      <div class="sub" style="font-style:italic;color:#A0665A">"Don't worry about the outfit — I've prepared it for you. Just bring black bottom pants and make sure you look good! 😘"</div>
+      <div class="ctaRow"><button class="btn next" id="toSurprise">Next → Surprise</button></div>
+    </div>
+  </section>
+
+  <!-- VIEW 5: SURPRISE / ENVELOPE -->
+  <section id="surpriseWrap" class="view is-hidden">
+    <div class="card">
+      <div class="title">Open this little letter for u 💌</div>
+      <div class="sub">tap the envelope ↓</div>
+      <div class="envelope-area">
+        <div class="envelope" id="envelope">
+          <div class="env-body"></div>
+          <div class="env-flap"></div>
+          <div class="env-bottom"></div>
+          <div class="letter"><div class="sweet"><p>Click to read full letter... 💕</p></div></div>
+        </div>
+        <div class="ctaRow"><button class="btn" id="backDress">← Back to Dresscode</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL DAN POPUP -->
+  <div class="letter-modal" id="letterModal">
+    <div class="letter-content">
+      <button class="close-letter" id="closeLetter">×</button>
+      <h2>To My Birthday Boy 💌</h2>
+      <p>Hi birthday boy,</p>
+      <p>You don't need to prepare anything, okay? No pressure at all. Just come as you are — comfy, happy, and with that cute smile of yours 🥹</p>
+      <p>I'll take care of everything: places, bills, tiny surprises… I just want you to feel loved, celebrated, and super at ease today.</p>
+      <p>Thank you for being you. Let me spoil you a little — it's your day 🤎</p>
+      <p class="tiny" style="font-size: 15px; color: #8F6E4A; margin-top: 14px; font-style: italic;">ps: if you forget anything, it's okay. I only need you here with me. Always. 💕</p>
+    </div>
+  </div>
+
+  <section class="overlay" id="noBtnOverlay" aria-hidden="true">
+    <div class="popup">
+      <div class="imgbox"><img src="images/harusmau.jpg" alt="cute angry"></div>
+      <h3 style="margin:.4rem 0;color:#ff1493;font-size:26px;font-family:'Pacifico',cursive">Harus mau! 😤💕</h3>
+      <p style="margin:0 0 1.2rem;color:#7a5a6a;font-size:16px">Please say yes… it's your special day!</p>
+      <div class="buttons"><button class="btn" id="closePopup">Okayyy fine! 🥺</button></div>
+    </div>
+  </section>
+  
+  <!-- POP-UP BARU UNTUK RUNDOWN -->
+  <section class="overlay" id="rundownOverlay" aria-hidden="true">
+    <div class="popup">
+      <div class="imgbox"><img id="popupImage" src="" alt="Activity Image"></div>
+      <h3 id="popupTitle" style="margin:.4rem 0;color:#594437;font-size:26px;font-family:'Pacifico',cursive"></h3>
+      <p id="popupText" style="margin:0 0 1.2rem;color:#7a5a6a;font-size:17px; line-height: 1.6;"></p>
+      <div class="buttons"><button class="btn" id="closeRundownPopup">Close</button></div>
+    </div>
+  </section>
+
+
+<script>
+    const views = {
+        home: document.getElementById('home'),
+        transition: document.getElementById('transitionWrap'),
+        rundown: document.getElementById('rundownWrap'),
+        dress: document.getElementById('dressWrap'),
+        surprise: document.getElementById('surpriseWrap')
+    };
+    
+    // Elemen UI lainnya
+    const noBtnOverlay = document.getElementById('noBtnOverlay');
+    const rundownOverlay = document.getElementById('rundownOverlay');
+    const letterModal = document.getElementById('letterModal');
+    
+    // --- DATA UNTUK POP-UP RUNDOWN ---
+    const rundownData = {
+        pickup: { image: "images/motor.jpg", title: "Pick-up ur gf 💕", text: "“Don't worry, I'll wait in front — no rush, just come as you are 🤎”" },
+        sushi: { image: "images/sushi.jpg", title: "Lunch Sushi 🍣", text: "“Let me feed you sushi for once 😉 this one's on me okay?”" },
+        photobox: { image: "images/photobox.jpg", title: "Photobox 📸", text: "“No overthinking — just smile! I already know which pose I want 😉📸”" },
+        coffee: { image: "images/coffee.jpg", title: "Ngopi & Yapping ☕", text: "“Our favorite topic: literally everything and nothing ☕💭”" },
+        gift: { image: "images/gift.jpg", title: "Gift Reveal 🎁✨", text: "“It's still a surprise... but I hope it makes your heart full 🫶💌”" }
+    };
+    
+    // === FUNGSI UTAMA UNTUK BERPINDAH VIEW (DENGAN PENAMBAHAN CONFETTI) ===
+    function switchView(targetView) {
+        for (let key in views) {
+            views[key].classList.add('is-hidden');
+        }
+        targetView.classList.remove('is-hidden');
+        // Panggil confetti TEPAT SAAT view baru ditampilkan
+        createConfetti(); 
+    }
+
+    // Fungsi efek (sparkles, confetti, dll.)
+    function createConfetti(){/* akan diisi di bawah */}
+    function createSparkles(e){/* akan diisi di bawah */}
+    function createHeart(){/* akan diisi di bawah */}
+    
+    // --- Event Listeners untuk Navigasi View (DENGAN PENAMBAHAN TIMEOUT) ---
+    document.getElementById('yesBtn').addEventListener('click', (e) => { 
+        createSparkles(e); 
+        setTimeout(() => switchView(views.transition), 200); 
+    });
+    document.getElementById('toRundown').addEventListener('click', (e) => { 
+        createSparkles(e); 
+        setTimeout(() => switchView(views.rundown), 200); 
+    });
+    document.getElementById('toDress').addEventListener('click', (e) => { 
+        createSparkles(e); 
+        setTimeout(() => switchView(views.dress), 200); 
+    });
+    document.getElementById('toSurprise').addEventListener('click', (e) => { 
+        createSparkles(e); 
+        setTimeout(() => switchView(views.surprise), 200); 
+    });
+    document.getElementById('backDress').addEventListener('click', (e) => { 
+        createSparkles(e); 
+        setTimeout(() => switchView(views.dress), 200); 
+    });
+
+    // --- LOGIKA UNTUK POP-UP RUNDOWN ---
+    const rundownItems = document.querySelectorAll('.cardItem');
+    const popupImage = document.getElementById('popupImage');
+    const popupTitle = document.getElementById('popupTitle');
+    const popupText = document.getElementById('popupText');
+    
+    rundownItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            const activityId = item.dataset.activity;
+            const data = rundownData[activityId];
+            
+            if (data) {
+                createSparkles(e);
+                createConfetti();
+                popupImage.src = data.image;
+                popupTitle.innerHTML = data.title;
+                popupText.innerHTML = data.text;
+                rundownOverlay.classList.add('show');
+            }
+        });
+    });
+    
+    document.getElementById('closeRundownPopup').addEventListener('click', () => {
+        rundownOverlay.classList.remove('show');
+    });
+
+    // Logika Tombol "Nggak Mau"
+    const noBtn = document.getElementById('noBtn');
+    let escapeCount = 0;
+    noBtn.addEventListener('mouseenter', () => {
+        if (escapeCount < 4) {
+            const x = Math.random() * 300-150; const y = Math.random() * 150-75;
+            noBtn.style.transform = `translate(${x}px, ${y}px) rotate(${Math.random()*20-10}deg)`;
+            escapeCount++;
+        } else {
+            createConfetti();
+            noBtnOverlay.classList.add('show');
+            noBtn.style.transform = ''; escapeCount = 0;
+        }
+    });
+    noBtn.addEventListener('mousedown', () => { createConfetti(); noBtnOverlay.classList.add('show'); });
+    document.getElementById('closePopup').addEventListener('click', () => { noBtnOverlay.classList.remove('show'); });
+
+    // Logika Amplop dan Surat
+    document.getElementById('envelope').addEventListener('click', (e) => {
+        createSparkles(e); 
+        createConfetti();
+        letterModal.classList.add('show');
+        const big = document.createElement('div'); big.className='big-love'; big.textContent='💖';
+        document.body.appendChild(big); setTimeout(()=>big.remove(),2500);
+    });
+    document.getElementById('closeLetter').addEventListener('click', () => letterModal.classList.remove('show'));
+
+    // --- KODE LENGKAP UNTUK SEMUA EFEK VISUAL ---
+    (function setupEffects() {
+        const heartsContainer = document.getElementById('heartsContainer');
+        const sparkleTrail = document.getElementById('sparkleTrail');
+
+        createConfetti = function(){
+            const shapes=['💕','💖','🌸','✨','⭐','💝'];
+            for(let i=0;i<60;i++){
+                const c=document.createElement('div');
+                c.className='confetti-piece';
+                // === PERBAIKAN PENTING: Menggunakan position: fixed agar sesuai viewport ===
+                c.style.position = 'fixed'; 
+                c.style.zIndex = '999';
+                c.textContent=shapes[Math.floor(Math.random()*shapes.length)];
+                c.style.left=Math.random()*100+'vw'; // Menggunakan vw agar relatif terhadap lebar layar
+                c.style.top = '-20px'; // Mulai dari atas layar
+                c.style.fontSize='16px';
+                c.style.animation = `confettiFall ${Math.random()*2.5+2.5}s ${Math.random()*0.6}s linear forwards`;
+                document.body.appendChild(c); 
+                setTimeout(()=>c.remove(),5000);
+            }
+        }
+
+        createSparkles = function(e){
+            for(let i=0;i<8;i++){
+                const s=document.createElement('div'); s.className='sparkle';
+                s.style.left=e.clientX+'px'; s.style.top=e.clientY+'px';
+                const angle=(Math.PI*2*i)/8, dist=40;
+                s.style.setProperty('--tx',Math.cos(angle)*dist+'px');
+                s.style.setProperty('--ty',Math.sin(angle)*dist+'px');
+                document.body.appendChild(s); setTimeout(()=>s.remove(),1200);
+            }
+        }
+
+        createHeart = function(){
+            const heart = document.createElement('div'); heart.className = 'heart';
+            heart.textContent = ['💕','💖','💗','💝','💘','🌸'][Math.floor(Math.random()*6)];
+            heart.style.left = Math.random()*100 + '%';
+            heart.style.animationDelay = Math.random()*2 + 's';
+            heart.style.animationDuration = (Math.random()*3 + 5) + 's';
+            heartsContainer.appendChild(heart); setTimeout(()=>heart.remove(),8000);
+        }
+        setInterval(createHeart,600);
+
+        let trailTimeout;
+        document.addEventListener('mousemove', (e)=>{
+            if(trailTimeout) return;
+            trailTimeout = setTimeout(()=>{
+                const trail = document.createElement('div'); trail.className = 'trail-item';
+                trail.textContent = ['✨','💫','⭐'][Math.floor(Math.random()*3)];
+                trail.style.left = e.clientX + 'px'; trail.style.top = e.clientY + 'px';
+                sparkleTrail.appendChild(trail);
+                setTimeout(()=>trail.remove(),1000); trailTimeout = null;
+            },50);
+        });
+
+        document.querySelectorAll('.fit').forEach(item => {
+            item.addEventListener('click', (e) => {
+                createSparkles(e);
+                createConfetti();
+            });
+        });
+    })();
+</script>
+</body>
+</html>
